@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -34,9 +35,11 @@ export default function Home() {
       password: ''
     }
   })
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   async function handleSubmit(values: z.infer<typeof LoginFormSchema>) {
     try {
+      setIsLoading(true)
       const token = await Login({
         email: values.email,
         password: values.password
@@ -54,6 +57,8 @@ export default function Home() {
       if (e instanceof Error) {
         toast.error(errorMap[e.message] ?? errorMap.LOGIN_FAILED)
       }
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -94,8 +99,8 @@ export default function Home() {
               )}
             />
 
-            <Button variant="primary" size='full' type="submit">
-              Entrar
+            <Button variant="primary" size='full' type="submit" disabled={isLoading}>
+              { isLoading ? 'Carregando' : 'Entrar' }
             </Button>
 
             <Link href='forgot-password' className="hover:underline">Esqueceu a senha?</Link>
