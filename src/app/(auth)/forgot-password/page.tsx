@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -52,7 +51,7 @@ export default function Page(){
                             </FormItem>
                         )}
                     />
-                    
+
                     <p className="mb-12 w-3/4 text-md">Enviaremos um código de verificação </p>
 
                     <Button variant='primary' size='full' type="submit">Enviar código de verificação</Button>
