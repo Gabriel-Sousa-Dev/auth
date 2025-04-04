@@ -1,5 +1,4 @@
 'use client'
-import { CreateUser } from "@/actions/user/CreateUser";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -50,12 +49,14 @@ export default function Page(){
 
     async function handleSubmit(values: z.infer<typeof RegisterFormSchema>) {
         try {
-            await CreateUser(values)
+
+            // TODO: Logica de criar usuário
 
             toast.success('Usuário criado com sucesso')
             router.push('/') // TODO: redirecione para uma rota
         } catch (e) {
             toast.error('Ocorreu um erro inesperado ao criar um novo usuário')
+            console.error('Ocorreu um erro inesperado ao criar um novo usuário', e) 
         }
     }
 
