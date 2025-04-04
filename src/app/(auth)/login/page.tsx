@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-const LogimFormSchema = z.object({
+const LoginFormSchema = z.object({
   email: z.string({
     required_error: 'Nome Obrigatorio'
   })
@@ -20,23 +20,22 @@ const LogimFormSchema = z.object({
   password: z.string({
     required_error: 'Senha obrigátoria'
   })
-  .min(8, 'A senha deve ter pelo menos 8 caracteres')
-  .regex(/[A-Z]/, 'A senha deve conter pelo menos uma letra maiúscula')
-  .regex(/[0-9]/, 'A senha deve conter pelo menos um número')
-  .regex(/[!@#$%^&*()_+{}[\]:;<>,.?~\\\/\-]/, 'A senha deve conter pelo menos um caractere especial')
+    .min(8, 'A senha deve ter pelo menos 8 caracteres')
+    .regex(/[A-Z]/, 'A senha deve conter pelo menos uma letra maiúscula')
+    .regex(/[0-9]/, 'A senha deve conter pelo menos um número')
+    .regex(/[!@#$%^&*()_+{}[\]:;<>,.?~\\\/\-]/, 'A senha deve conter pelo menos um caractere especial')
 })
 
 export default function Home() {
-
-  const form = useForm<z.infer<typeof LogimFormSchema>>({
-    resolver: zodResolver(LogimFormSchema),
+  const form = useForm<z.infer<typeof LoginFormSchema>>({
+    resolver: zodResolver(LoginFormSchema),
     defaultValues: {
       email: '',
       password: ''
     }
   })
 
-  async function handleSubmit(values: z.infer<typeof LogimFormSchema>) {
+  async function handleSubmit(values: z.infer<typeof LoginFormSchema>) {
     try {
       const token = await Login({
         email: values.email,
@@ -51,7 +50,7 @@ export default function Home() {
         'LOGIN_FAILED': "Ocorreu um erro inesperado ao fazer login.",
         'INVALID_CREDENTIALS': "Email ou senha invalidos."
       }
-      
+
       if (e instanceof Error) {
         toast.error(errorMap[e.message] ?? errorMap.LOGIN_FAILED)
       }
