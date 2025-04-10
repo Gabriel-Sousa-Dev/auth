@@ -103,7 +103,7 @@ export default function Home() {
               { isLoading ? 'Carregando' : 'Entrar' }
             </Button>
 
-            <Link href='forgot-password' className="hover:underline">Esqueceu a senha?</Link>
+            {/* <Link href='forgot-password' className="hover:underline">Esqueceu a senha?</Link> */}
           </div>
 
         </form>
