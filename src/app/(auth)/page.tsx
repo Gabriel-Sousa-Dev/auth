@@ -1,11 +1,11 @@
 "use client"
-import { Login } from "@/actions/user/Login";
+import { GetModulesFromUser } from "@/actions/user/GetModulesFromUser";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useAuth } from "@/contexts/AuthContext";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -28,6 +28,8 @@ const LoginFormSchema = z.object({
 })
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const { signIn } = useAuth()
   const form = useForm<z.infer<typeof LoginFormSchema>>({
     resolver: zodResolver(LoginFormSchema),
     defaultValues: {
@@ -35,23 +37,73 @@ export default function Home() {
       password: ''
     }
   })
-  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   async function handleSubmit(values: z.infer<typeof LoginFormSchema>) {
+    // TODO: Talvez tenha como tirar o Try/Catch daqui, o Sign não usa nada desse tipo
     try {
       setIsLoading(true)
-      const token = await Login({
-        email: values.email,
-        password: values.password
+      const successful = await signIn({
+        password: values.password,
+        email: values.email
       })
 
-      // TODO: lógica de autenticação
+      if (!successful) {
+        throw new Error("LOGIN_FAILED")
+      }
 
-      toast.success('Login efetuado com sucesso')
+      const token = localStorage.getItem('token')
+
+      if (!token) {
+        throw new Error('TOKEN_NOT_EXIST')
+      }
+      const tokenData = jwtDecode<JwtPayload & {id: string, role: RoleEnum, companyId: string}>(token)
+    
+      const redirectMap: Record<SystemModules, string> = {
+        order: "/orders",
+        kitchen: "/kitchen",
+        product: "/stock",
+      }
+
+      switch (tokenData.role) {
+        case "ADMIN": 
+          window.location.href = '/admin'
+          break
+
+        case "COMPANY":
+          window.location.href = '/company'
+          break
+
+        case "EMPLOYEE":
+          const userModules = await GetModulesFromUser(token)
+          if (userModules.data.length === 0) {
+            toast.warning('Não há nenhum módulo atribuido a esse funcionário!')
+            return
+          }
+        
+          const userMainModule = userModules.data[0].name
+          const pathToRedirect = redirectMap[userMainModule]
+
+          if (!pathToRedirect) {
+            throw new Error('REDIRECT_PATH_NOT_FOUND')
+          }
+
+          toast.success('Login efetuado com sucesso')
+          window.location.href = pathToRedirect
+          return
+          break
+        
+        default:
+          toast.error('Tipo de usuário não reconhecido pelo sistema')
+          console.error('Tipo de usuário não reconhecido pelo sistema: ', tokenData.role)
+          return
+      }
     } catch (e) {
+      console.error(e);
+      // TODO: reformular o catch
       const errorMap: Record<string, string> = {
         'LOGIN_FAILED': "Ocorreu um erro inesperado ao fazer login.",
-        'INVALID_CREDENTIALS': "Email ou senha invalidos."
+        'TOKEN_NOT_EXIST': "Autenticação necessária. Por favor, entre com seus dados novamente.",
+        'REDIRECT_PATH_NOT_FOUND': "Ocorreu um erro ao fazer o redirecionamento"
       }
 
       if (e instanceof Error) {
