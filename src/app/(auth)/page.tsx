@@ -59,7 +59,7 @@ export default function Home() {
       const tokenData = jwtDecode<JwtPayload & {id: string, role: RoleEnum, companyId: string}>(token)
     
       const redirectMap: Record<SystemModules, string> = {
-        order: "/orders",
+        order: "/orders/orders",
         kitchen: "/kitchen",
         product: "/stock",
       }
