@@ -9,11 +9,13 @@ import {
 } from "react";
 import { Login } from "@/actions/user/Login";
 import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
 
 type AuthContextType = {
   isAuthenticated: boolean;
   signIn: (data: SignInData) => Promise<boolean>;
   signOut: () => void;
+  userModules: string[];
 };
 
 type SignInData = {
@@ -21,10 +23,22 @@ type SignInData = {
   password: string;
 };
 
+type DecodedToken = {
+  id: string;
+  role: string;
+  companyId: string;
+  user_type: string;
+  position: string;
+  modules: string[];
+  iat: number;
+  exp: number;
+};
+
 export const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   signIn: async () => false,
   signOut: () => {},
+  userModules: [],
 });
 
 interface AuthProviderProps {
@@ -33,6 +47,7 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [userModules, setUserModules] = useState<string[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -40,8 +55,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const token = localStorage.getItem("token");
       if (token) {
         setIsAuthenticated(true);
+
+        const decoded = jwtDecode<DecodedToken>(token);
+        if (decoded.modules) {
+          setUserModules(decoded.modules);
+          // console.log(decoded.modules);
+        }
       } else {
         setIsAuthenticated(false);
+        setUserModules([]);
         router.push("/");
       }
     };
@@ -66,6 +88,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (token) {
         localStorage.setItem("token", token);
         setIsAuthenticated(true);
+
+        const decoded = jwtDecode<DecodedToken>(token);
+        if (decoded.modules) {
+          setUserModules(decoded.modules);
+        }
+
         return true;
       } else {
         console.log("Erro ao fazer login");
@@ -87,6 +115,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     isAuthenticated,
     signIn,
     signOut,
+    userModules,
   };
 
   return (
