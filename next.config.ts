@@ -4,6 +4,7 @@ const {
   NEXT_PUBLIC_KITCHEN_ZONE_URL,
   NEXT_PUBLIC_ORDERS_ZONE_URL,
   NEXT_PUBLIC_STOCK_ZONE_URL,
+  NEXT_PUBLIC_CHECKOUT_ZONE_URL,
   NEXT_PUBLIC_ADMIN_ZONE_URL,
   NEXT_PUBLIC_COMPANY_ZONE_URL
 } = process.env
@@ -56,6 +57,21 @@ const nextConfig: NextConfig = {
         destination: `${NEXT_PUBLIC_STOCK_ZONE_URL}/stock-static/_next/:path*`,
       },
       //#endregion - Proxy | Stock
+
+      //#region - Proxy | Checkout
+      {
+        source: '/checkout',
+        destination: `${NEXT_PUBLIC_CHECKOUT_ZONE_URL}`
+      },
+      {
+        source: '/checkout/:path+',
+        destination: `${NEXT_PUBLIC_CHECKOUT_ZONE_URL}/:path+`
+      },
+      {
+        source: '/checkout-static/_next/:path*',
+        destination: `${NEXT_PUBLIC_CHECKOUT_ZONE_URL}/checkout-static/_next/:path*`,
+      },
+      //#endregion - Proxy | Checkout
 
       //#region - Proxy | Admin
       {
