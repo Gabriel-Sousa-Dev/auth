@@ -1,6 +1,6 @@
 type RoleEnum = "EMPLOYEE" | "ADMIN" | "COMPANY"
 
-type SystemModules = "kitchen" | "product" | "order"
+type SystemModules = "kitchen" | "product" | "order" | "checkout" 
 
 interface Module {
     id: string

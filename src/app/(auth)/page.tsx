@@ -62,6 +62,7 @@ export default function Home() {
         order: "/orders/orders",
         kitchen: "/kitchen",
         product: "/stock",
+        checkout: "/checkout"
       }
 
       switch (tokenData.role) {
