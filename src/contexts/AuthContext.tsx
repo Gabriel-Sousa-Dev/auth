@@ -8,7 +8,7 @@ import {
   useContext,
 } from "react";
 import { Login } from "@/actions/user/Login";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 type AuthContextType = {
   isAuthenticated: boolean;
@@ -33,6 +33,7 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const pathname = usePathname()
   const router = useRouter();
 
   useEffect(() => {
@@ -41,8 +42,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (token) {
         setIsAuthenticated(true);
       } else {
+        if(pathname !== '/'){
+          router.push("/")
+        }
         setIsAuthenticated(false);
-        router.push("/");
       }
     };
 
