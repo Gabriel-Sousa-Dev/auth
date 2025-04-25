@@ -56,7 +56,7 @@ export default function Home() {
       if (!token) {
         throw new Error('TOKEN_NOT_EXIST')
       }
-      const tokenData = jwtDecode<JwtPayload & {id: string, role: RoleEnum, companyId: string}>(token)
+      const tokenData = jwtDecode<JwtPayload & {id: string, role: RoleEnum, companyId: string, user_type: string, position: string, modules: SystemModules[]}>(token)
     
       const redirectMap: Record<SystemModules, string> = {
         order: "/orders/orders",
@@ -75,13 +75,13 @@ export default function Home() {
           break
 
         case "EMPLOYEE":
-          const userModules = await GetModulesFromUser(token)
-          if (userModules.data.length === 0) {
+          const userModules = tokenData.modules
+          if (userModules.length === 0) {
             toast.warning('Não há nenhum módulo atribuido a esse funcionário!')
             return
           }
         
-          const userMainModule = userModules.data[0].name
+          const userMainModule = userModules[0]
           const pathToRedirect = redirectMap[userMainModule]
 
           if (!pathToRedirect) {
