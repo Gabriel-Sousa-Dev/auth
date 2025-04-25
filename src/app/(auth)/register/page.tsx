@@ -49,7 +49,8 @@ export default function Page(){
 
     async function handleSubmit(values: z.infer<typeof RegisterFormSchema>) {
         try {
-
+            console.log(values);
+            
             // TODO: Logica de criar usuário
 
             toast.success('Usuário criado com sucesso')
