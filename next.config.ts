@@ -5,6 +5,7 @@ const {
   NEXT_PUBLIC_ORDERS_ZONE_URL,
   NEXT_PUBLIC_STOCK_ZONE_URL,
   NEXT_PUBLIC_CHECKOUT_ZONE_URL,
+  NEXT_PUBLIC_EXTRACT_NF_ZONE_URL,
   NEXT_PUBLIC_ADMIN_ZONE_URL,
   NEXT_PUBLIC_COMPANY_ZONE_URL
 } = process.env
@@ -100,8 +101,24 @@ const nextConfig: NextConfig = {
       {
         source: '/company-static/_next/:path*',
         destination: `${NEXT_PUBLIC_COMPANY_ZONE_URL}/company-static/_next/:path*`,
-      }
+      },
       //#endregion - Proxy | Company
+      
+      //#region - Proxy | Extração de NF
+      {
+        source: '/NF',
+        destination: `${NEXT_PUBLIC_EXTRACT_NF_ZONE_URL}`
+      },
+      {
+        source: '/NF/:path+',
+        destination: `${NEXT_PUBLIC_EXTRACT_NF_ZONE_URL}/:path+`
+      },
+      {
+        source: '/extract-static/_next/:path*',
+        destination: `${NEXT_PUBLIC_EXTRACT_NF_ZONE_URL}/extract-static/_next/:path*`,
+      },
+      //#endregion - Proxy | Extração de NF
+
     ]
   }
 };
