@@ -130,7 +130,7 @@ export default function Home() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" spellCheck='false' className="text-primary" {...field} />
+                    <Input type="email" spellCheck='false' className="dark:bg-white text-black" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -144,7 +144,7 @@ export default function Home() {
                 <FormItem>
                   <FormLabel>Senha</FormLabel>
                   <FormControl>
-                    <Input type="password" className="text-black" {...field} />
+                    <Input type="password" spellCheck="false" className="dark:bg-white text-black" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

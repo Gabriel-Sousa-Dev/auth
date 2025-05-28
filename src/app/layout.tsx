@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -20,15 +21,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-br">
-      <body
-        className={`${inter.className} antialiased bg-zinc-950`}
-      >
-        <AuthProvider>
-          {children}
-        </AuthProvider>
-        <p className="fixed bottom-7 left-9 font-semibold text-gray-400">Powered by Tchê.comp</p>
-        <Toaster richColors />
+    <html lang="pt-br"
+      className={`${inter.className} antialiased bg-zinc-950`}
+      suppressHydrationWarning
+    >
+      <body>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+          {/* <p className="fixed bottom-7 left-9 font-semibold text-gray-400">Powered by Tchê.comp</p> */}
+          <Toaster richColors />
+        </ThemeProvider>
       </body>
     </html>
   );
